@@ -1,4 +1,6 @@
-"""This module defines classes for thivhness curves"""
+"""This module defines classes for thivhness curves
+See: http://micro.edu/calculations/thickness.html for details. 
+"""
 
 import numpy as np
 import math
@@ -7,7 +9,7 @@ from scipy import optimize
 class  ThicknessCurve:
     """This provides the interface to all the thickness curves.  After
     construction, the object can be called like a function to evaluate
-    the thickness fro the relative pressure.
+    the thickness for the relative pressure.
     """
     def eval(self, Prel):
         return 0
@@ -16,6 +18,7 @@ class  ThicknessCurve:
         return self.eval(Prel)
 
 class KrukJaroniecSayari(ThicknessCurve):
+    """An instance of a ThicknessCurve that implements the Kruk-Jaroniec-Sayari model."""
     def __init__(self, c1 = 3.540, c2 = -5.000, c3 = 0.333):
         self.c1 = c1
         self.c2 = c2
@@ -25,6 +28,7 @@ class KrukJaroniecSayari(ThicknessCurve):
         return self.c1 * ((self.c2 / np.log(Prel))) ** self.c3
 
 class Halsey(ThicknessCurve):
+    """An instance of a ThicknessCurve that implements the Halsey model."""
     def __init__(self, c1 = 3.540, c2 = -5.000, c3 = 0.333):
         self.c1 = c1
         self.c2 = c2
@@ -34,6 +38,7 @@ class Halsey(ThicknessCurve):
         return self.c1 * ((self.c2 / np.log(Prel))) ** self.c3
 
 class HarkinsJura(ThicknessCurve):
+    """An instance of a ThicknessCurve that implements the Harkins-Jura model."""
     def __init__(self, c1 = 13.9900, c2 = 0.0340, c3 = 0.500):
         self.c1 = c1
         self.c2 = c2
@@ -43,6 +48,7 @@ class HarkinsJura(ThicknessCurve):
         return (self.c1 / (self.c2 - np.log10(Prel))) ** self.c3
 
 class BroekhoffDeBoer(ThicknessCurve):
+    """An instance of a ThicknessCurve that implements the Broekhoff-de Boer model."""
     def __init__(self, c1 = -16.1100, c2 = 0.1682, c3 = -0.1137):
         self.c1 = c1
         self.c2 = c2
@@ -59,6 +65,7 @@ class BroekhoffDeBoer(ThicknessCurve):
         return xThickness
 
 class CarbonBlackSTSA(ThicknessCurve):
+    """An instance of a ThicknessCurve that implements the Carbon Black STSA model."""
     def __init__(self, c1 = 2.9800, c2 = 6.4500, c3 = 0.8800):
         self.c1 = c1
         self.c2 = c2
