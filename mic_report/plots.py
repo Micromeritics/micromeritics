@@ -4,7 +4,7 @@ import numpy as np
 import pylab as pl
 import matplotlib.pyplot as plt
 
-def isoplot( Q, P, descr, min=None, max=None ): 
+def plotIsotherm( Q, P, descr, min=None, max=None ): 
     """Show an isotherm plot.  If the min and/or max is available, also show 
     blur bars at those locations."""
     
@@ -20,8 +20,8 @@ def isoplot( Q, P, descr, min=None, max=None ):
         pl.axvline(x=max, color='b')
     pl.show()
 
-def betplot( P, T, slope, y_intercept, max ):
-    """Show a BET transform plot wutht he line of best fit overlaid. """
+def plotBET( P, T, slope, y_intercept, max ):
+    """Show a BET transform plot with the line of best fit overlaid. """
 
     pl.figure()
     pl.plot( P, T, 'ro' )
@@ -34,7 +34,20 @@ def betplot( P, T, slope, y_intercept, max ):
     pl.plot( X,Y, 'r-' )
     pl.show()
 
-def thicknessplot( P, T, title ):
+def plotRouquerol( P, R ) : 
+    """Show a Rouquerol BET transform plot. """
+    pl.figure()
+    pl.plot( P, T, 'ro' )
+    pl.title('Rouquerol BET')
+    pl.ylabel('$Q(1-p/p^\circ)]$')
+    pl.xlabel('Relative Pressure($p/p^\circ$)')
+
+    X = np.array([0.0, max])
+    Y = slope*X + y_intercept
+    pl.plot( X,Y, 'r-' )
+    pl.show()
+
+def plotThickness( P, T, title ):
     """Show a plot of the passed in thickness"""
     fig = plt.figure(figsize=(12,6))
     axes = fig.add_subplot(111)

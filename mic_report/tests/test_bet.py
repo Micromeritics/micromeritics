@@ -17,5 +17,9 @@ class TestBET(unittest.TestCase):
         np.testing.assert_almost_equal( r.C, 149.959660, 2 )
         np.testing.assert_almost_equal( r.q_m, 4.7569, 4 )
 
+        roq = bet.Isotherm2RoquerolBET(Qads, Prel) 
+        np.testing.assert_almost_equal( roq[0], 4.3559, 4 )
+        np.testing.assert_almost_equal( roq[6], 4.62074, 4 )
+
 if __name__ == '__main__':
     unittest.main()
