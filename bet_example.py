@@ -1,4 +1,4 @@
-from mic_report import bet, util, isotherm_examples as ex, plots
+from micicromeritics import bet, util, isotherm_examples as ex, plots
 
 #Setup the raw data for the calculation.  
 s = ex.carbon_black()   # example isotherm of Carbon Black with N2.  
