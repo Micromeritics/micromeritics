@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='micromeritics',
-    version='0.1dev',
+    version='0.1.1dev',
     packages=['micromeritics',],
     maintainer='Stefan Koch',
     maintainer_email='stefan.koch.micro@gmail.com', 
