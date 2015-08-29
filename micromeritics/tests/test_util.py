@@ -1,6 +1,6 @@
 import numpy as np
 import unittest
-from .. import util, isotherm_examples as ex
+from micromeritics import util, isotherm_examples as ex
 
 class TestUtil(unittest.TestCase):
     def test_restrict(self):

@@ -1,6 +1,6 @@
 import numpy as np
 import unittest
-from .. import bet
+from micromeritics import bet
 
 class TestBET(unittest.TestCase):
     def test_bet(self):
