@@ -1,4 +1,4 @@
-"""This module defines classes for thivhness curves
+"""This module defines classes for thickness curves
 See: http://micro.edu/calculations/thickness.html for details. 
 """
 
@@ -19,13 +19,13 @@ class  ThicknessCurve:
 
 class KrukJaroniecSayari(ThicknessCurve):
     """An instance of a ThicknessCurve that implements the Kruk-Jaroniec-Sayari model."""
-    def __init__(self, c1 = 3.540, c2 = -5.000, c3 = 0.333):
+    def __init__(self, c1 = 60.6500, c2 = 0.03071, c3 = 0.3968):
         self.c1 = c1
         self.c2 = c2
         self.c3 = c3
-
+ 
     def eval(self, Prel):
-        return self.c1 * ((self.c2 / np.log(Prel))) ** self.c3
+        return (self.c1/ ( self.c2 - np.log10(Prel)))**self.c3
 
 class Halsey(ThicknessCurve):
     """An instance of a ThicknessCurve that implements the Halsey model."""

@@ -1,23 +1,19 @@
-from micicromeritics import bet, util, isotherm_examples as ex, plots
+from micromeritics import bet, util, plots
+from micromeritics import isotherm_examples as ex
 
-#Setup the raw data for the calculation.  
-s = ex.carbon_black()   # example isotherm of Carbon Black with N2.  
-min = 0.05              # 0.05 to 0.30 range for BET 
-max = 0.3
-# Restrict the range of the isotherm to do the BET calcuation on.   
-Q,P = util.restrict_isotherm(s.Qads, s.Prel, min, max)
+# Setup the raw data for the calculation.  
+# using example isotherm data from Carbon Black analyzed with N2.
+s = ex.carbon_black()   
 
-# Show the full isotherm, and BET range.  
-plots.isoplot(s.Qads, s.Prel, s.descr[s.descr.find(':')+1:], min, max )
-
-# Do the BET calculation.  
-B = bet.bet(Q, P, 0.162)
-
-# Show the BET transform.  
-plots.betplot(P, B.transform, B.line_fit.slope, B.line_fit.y_intercept, max )
-
-# Show the results of the BET calculation.  
-print("BET surface area: %.4f ± %.4f m²/g" % (B.sa, B.sa_err))
-print("C:                %.6f" % B.C)
-print("Qm:               %.4f cm³/g STP" % B.q_m)
-
+# Do the BET calculation. Then
+# - show the transform plot
+# - show the isotherm plot
+# - print the BET area, C constant, and monolayer quantity adsorbed
+BET_calc = bet.bet(s.Prel, s.Qads, Pmin = 0.05, Pmax = 0.3, csa = 0.162)
+plots.plotBETTransform(BET_calc)
+plots.plotBETIsotherm(BET_calc)
+plots.addRangeBars(0.05, 0.3)
+plots.show()
+print("BET surface area: %.4f cm^3/g STP" % BET_calc.sa)
+print("BET C: %.4f" % BET_calc.C)
+print("BET Qm: %.4f cm^3/g STP" % BET_calc.q_m)

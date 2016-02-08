@@ -5,7 +5,7 @@ from micromeritics import util, isotherm_examples as ex
 class TestUtil(unittest.TestCase):
     def test_restrict(self):
         s = ex.carbon_black()
-        Q,P = util.restrict_isotherm( s.Qads, s.Prel, 0.05, 0.3 )
+        P,Q = util.restrict_isotherm( s.Prel, s.Qads, 0.05, 0.3 )
         self.assertTrue( Q.shape == P.shape )
 
         Qads = np.array([4.67017, 4.79068, 4.9767, 5.14414, 5.31144, 5.47106,

@@ -11,14 +11,19 @@ def make_touple( name, **args ) :
     from collections import namedtuple
     return namedtuple(name, args.keys() )(**args)
 
-def restrict_isotherm( Qads, Prel, min, max ):
-    """Restrict the isother Qads, Prel to relatve pressures between min and max. 
+def restrict_isotherm( P, Q, Pmin, Pmax ):
+    """Restrict the isotherm Q, P to pressures between min and max. 
 
-    Returns:  Restrictes Qads, Prel
+    Q: Quanity adsorbed 
+    P: Pressure (relative or absolute)
+    Pmin: minimum pressure
+    Pmax: maximum pressure
+
+    Returns:  Qads, P restricted to the specified range
     """
 
-    b = np.logical_and( Prel >= min, Prel <= max)
-    return Qads[b], Prel[b]
+    b = np.logical_and( P >= Pmin, P <= Pmax)
+    return P[b], Q[b]
 
 
 def linefit(x,y):

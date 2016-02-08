@@ -15,7 +15,8 @@ class TestTPlot(unittest.TestCase):
         Tcheck = np.array([5.02005, 5.35198, 5.69661, 6.06841,
                            6.46997, 6.91209, 7.40569, 7.96934, ])
 
-        r = tplot.tplot( Qads, Prel, thickness.HarkinsJura(), 
+        r = tplot.tplot( Prel, Qads, thickness.HarkinsJura(), 
+                         tmin = 5.0, tmax = 8.0,
                          dcf=0.0012800, sacf=1.000, sa=399.8633 )                      
         
         np.testing.assert_almost_equal( r.ext_sa, 4.0291, 3 )
@@ -23,7 +24,7 @@ class TestTPlot(unittest.TestCase):
         np.testing.assert_almost_equal( r.ma, 395.8343, 2 )
 
         for i in range(len(Tcheck)) :
-            np.testing.assert_almost_equal( Tcheck[i], r.t[i], 4 )
+            np.testing.assert_almost_equal( Tcheck[i], r.t_fit[i], 4 )
 
 if __name__ == '__main__':
     unittest.main()
