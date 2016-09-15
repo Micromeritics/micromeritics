@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='micromeritics',
-    version='0.1.2dev',
+    version='0.2.0',
     packages=['micromeritics',],
     maintainer='Stefan Koch',
     description='Python package for gas adsorption calculations and support tools.',
