@@ -20,7 +20,7 @@ _fields = {
         'name': 'sample',
         'row': 0,
         'column': 1,
-        'type': 'comment'
+        'type': 'string'
     },
     'sample mass': {
         'name': 'mass',
@@ -32,13 +32,13 @@ _fields = {
         'name': 'comments',
         'row': 0,
         'column': 0,
-        'type': 'comment'
+        'type': 'string'
     },
     'analysis ads': {
         'name': 'gas',
         'row': 0,
         'column': 1,
-        'type': 'comment'
+        'type': 'string'
     },
     'analysis bath': {
         'name': 'temperature',
@@ -50,7 +50,7 @@ _fields = {
         'name': 'date',
         'row': 0,
         'column': 1,
-        'type': 'comment'
+        'type': 'string'
     },
     'isotherm tabular': {
         'type': 'list',
@@ -63,24 +63,6 @@ _fields = {
         }
     }
 }
-
-
-def _handle_numbers(val):
-    if val:
-        val = val.replace(',', '')
-        number_regex = re.compile(r'^(-)?\d+(.|,)?\d+')
-        new_val = number_regex.search(val)
-        val = float(new_val.group())
-    return val
-
-
-def _convert_time(points):
-    minutes = []
-    for point in points:
-        h, m = str(point).split(':')
-        new_time = (int(h) * 60) + int(m)
-        minutes.append(new_time)
-    return minutes
 
 
 def read_xls_report(path):
@@ -97,48 +79,84 @@ def read_xls_report(path):
     sheet = workbook.sheet_by_index(0)
 
     values = {}
-    values['pressure'] = {}
 
     for r, c in product(range(sheet.nrows), range(sheet.ncols)):
         value = str(sheet.cell(r, c).value).lower()
-        field = next((f for f in _fields if value.startswith(f)), None)
-        if field:
-            fields = _fields[field]
-            if fields['type'] == 'number':
-                val = sheet.cell(r + fields['row'], c + fields['column']).value
-                _handle_numbers(val)
-                values[fields['name']] = val
-            elif fields['type'] == 'comment':
-                val = sheet.cell(r + fields['row'], c + fields['column']).value
-                val = val.replace('Comments: ', '').replace('\r\n', ' ')
-                values[fields['name']] = val
-            elif fields == 'isotherm tabular':
-                final_column = c
-                value = sheet.cell(r + 2, final_column).value
-                while any(value.startswith(field) for field
-                          in _fields['isotherm tabular']['labels'].keys()):
-                    final_column += 1
-                    value = sheet.cell(r + 2, final_column).value
-                list_of_labels = [sheet.cell(r + 2, i).value for i
-                                  in range(c, final_column)]
-                for item in list_of_labels:
-                    if sheet.cell(r + 6, c).value:
-                        points = []
-                        new_row = r + 4
-                        point = sheet.cell(new_row, c).value
-                        while point:
-                            points.append(point)
-                            new_row += 1
-                            point = sheet.cell(new_row, c).value
-                        c += 1
-                        label = _fields['isotherm tabular']['labels']
-                        name = next((f for f in label.keys()
-                                    if item.startswith(f)), None)
-                        if label[name] == 'time':
-                            time = _convert_time(points)
-                            values[label[name]] = time
-                        if label[name] == 'uptake':
-                            values[label[name]] = points
-                        elif 'time' not in label[name]:
-                            values['pressure'][label[name]] = points
+        field = next((v for k, v in _fields.items()
+                      if value.startswith(k)), None)
+        if not field:
+            continue
+        if field['type'] == 'number':
+            val = sheet.cell(r + field['row'], c + field['column']).value
+            values[field['name']] = _handle_numbers(val)
+        elif field['type'] == 'string':
+            val = sheet.cell(r + field['row'], c + field['column']).value
+            val = val.replace('Comments: ', '').replace('\r\n', ' ')
+            values[field['name']] = val
+        elif field['type'] == 'list':
+            values['pressure'] = {}
+            labels = _get_data_labels(sheet, r, c)
+            for item in labels:
+                if sheet.cell(r + 6, c).value:
+                    points = _get_data_points(sheet, r, c)
+                    c += 1
+                    label = _fields['isotherm tabular']['labels']
+                    name = next((f for f in label.keys()
+                                if item.startswith(f)), None)
+                    if label[name] == 'time':
+                        values[label[name]] = _convert_time(points)
+                    if label[name] == 'uptake':
+                        values[label[name]] = points
+                    else:
+                        values['pressure'][label[name]] = points
     return values
+
+
+def _handle_numbers(val):
+    """
+    Takes a cell with a desired number as an input and removes any
+    extra information (such as units) to return only the number as a float.
+    """
+    if val:
+        val = val.replace(',', '')
+        number_regex = re.compile(r'^(-)?\d+(.|,)?\d+')
+        new_val = number_regex.search(val)
+        val = float(new_val.group())
+    else:
+        val = None
+    return val
+
+
+def _convert_time(points):
+    # Converts time points from HH:MM format to minutes.
+    minutes = []
+    for point in points:
+        h, m = str(point).split(':')
+        new_time = (int(h) * 60) + int(m)
+        minutes.append(new_time)
+    return minutes
+
+
+def _get_data_labels(sheet, r, c):
+    # Locates all column labels for data collected during the experiment.
+    final_column = c
+    value = sheet.cell(r + 2, final_column).value
+    while any(value.startswith(field) for field
+              in _fields['isotherm tabular']['labels'].keys()):
+        final_column += 1
+        value = sheet.cell(r + 2, final_column).value
+    list_of_labels = [sheet.cell(r + 2, i).value for i
+                      in range(c, final_column)]
+    return list_of_labels
+
+
+def _get_data_points(sheet, r, c):
+    # Returns all collected data points for a given column.
+    points = []
+    new_row = r + 4
+    point = sheet.cell(new_row, c).value
+    while point:
+        points.append(point)
+        new_row += 1
+        point = sheet.cell(new_row, c).value
+    return points
