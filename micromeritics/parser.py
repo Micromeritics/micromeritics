@@ -105,7 +105,7 @@ def read_xls_report(path):
                                 if item.startswith(f)), None)
                     if label[name] == 'time':
                         values[label[name]] = _convert_time(points)
-                    if label[name] == 'uptake':
+                    elif label[name] == 'uptake':
                         values[label[name]] = points
                     else:
                         values['pressure'][label[name]] = points
