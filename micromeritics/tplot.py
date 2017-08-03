@@ -4,8 +4,8 @@ See: http://micro.edu/calculations/t-Plot.html for details.
 
 import numpy as np
 import math
-import constants as const
-import util
+from . import constants as const
+from . import util
 
 def tplot(Prel, Qads, thick_fcn, tmin, tmax,
           dcf, sacf, sa):
