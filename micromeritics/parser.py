@@ -162,7 +162,7 @@ def _get_data_labels(sheet, r, c):
 def _get_datapoints(sheet, r, c):
     """Returns all collected data points for a given column."""
     row = _fields['cell_value']['datapoints']['row']
-    # dfdfd
+    # Data can start on two different rows. Try first option and then next row.
     if sheet.cell(r + row, c).value:
         start_row = r + row
         final_row = r + row
